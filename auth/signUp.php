@@ -1,30 +1,34 @@
 <?php
-
 include "../connectDB.php";
 include "../functions.php";
 
-$username = filterRequest("username") ?? null;
-$email = filterRequest("email") ?? null;
-$password = filterRequest("password") ?? null;
+header("Content-Type: application/json");
 
-$stmt = $con->prepare(
-    "INSERT INTO `users`( `username`, `email`, `password`) VALUES (?,?,?)"
-);
+try {
+    $data = json_decode(file_get_contents("php://input"), true);
 
-$stmt->execute(
-    array($username, $email, $password)
-);
+    $username = filterRequest($data["username"] ?? null);
+    $email = filterRequest($data["email"] ?? null);
+    $password = filterRequest($data["password"] ?? null);
 
-$count = $stmt->rowCount();
+    $stmt = $con->prepare(
+        "INSERT INTO `users` (`username`, `email`, `password`) VALUES (?,?,?)"
+    );
 
-if ($count > 0) {
-    http_response_code(200);
-    echo json_encode(array(
-        "status" => "success"
-    ));
-} else {
-    http_response_code(400);
-    echo json_encode(array(
-        "status" => "filer"
-    ));
+    $stmt->execute([$username, $email, $password]);
+
+    if ($stmt->rowCount() > 0) {
+        http_response_code(201);
+        echo json_encode(["status" => "success"]);
+    } else {
+        http_response_code(400);
+        echo json_encode(["status" => "failed"]);
+    }
+
+} catch (\Throwable $th) {
+    http_response_code(500);
+    echo json_encode([
+        "status" => "error",
+        "message" => $th->getMessage()
+    ]);
 }
