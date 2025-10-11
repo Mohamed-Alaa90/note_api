@@ -74,6 +74,7 @@ class NoteController extends Controller
         $note = $request->user()->notes()->find($id);
         if (!$note) {
             return response()->json([
+                'status' => 'error',
                 'message' => 'Note not found'
             ], 404);
         }
