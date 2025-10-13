@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Create Note</title>
+    <title>Edit Note</title>
     <style>
         body {
             font-family: Arial;
@@ -22,7 +22,7 @@
         }
 
         button {
-            background: #4CAF50;
+            background: #2196F3;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -37,28 +37,29 @@
 </head>
 
 <body>
-    <h1>Create New Note</h1>
+    <h1>Edit Note</h1>
 
-    <form action="/notes" method="POST">
+    <form action="/notes/{{ $note->id }}" method="POST">
         @csrf
+        @method('PUT')
 
         <div>
             <label>Title:</label>
-            <input type="text" name="title" value="{{ old('title') }}">
+            <input type="text" name="title" value="{{ old('title', $note->title) }}">
             @error('title')
                 <div class="error">{{ $message }}</div>
-            @endError
+            @enderror
         </div>
 
         <div>
             <label>Content:</label>
-            <textarea name="content" rows="5">{{ old('content') }}</textarea>
+            <textarea name="content" rows="5">{{ old('content', $note->content) }}</textarea>
             @error('content')
                 <div class="error">{{ $message }}</div>
-            @endError
+            @enderror
         </div>
 
-        <button type="submit">Create Note</button>
+        <button type="submit">Update Note</button>
         <a href="/notes">Cancel</a>
     </form>
 

@@ -33,12 +33,15 @@
         <p>No notes available.</p>
     @else
         @foreach ($notes as $note)
-            <div class='note'>
+            <div class="note">
                 <h3>{{ $note->title }}</h3>
                 <p>{{ $note->content }}</p>
+                <small>Created: {{ $note->created_at->diffForHumans() }}</small>
+                <br>
+                <a href="/notes/{{ $note->id }}/edit" style="color: blue;">Edit</a>
             </div>
-            <small>Created at: {{ $note->created_at }}</small>
         @endforeach
+
     @endif
 
 </body>
